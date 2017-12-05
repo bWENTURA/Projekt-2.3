@@ -28,6 +28,8 @@ bool integer_input(std::ifstream &file, int &number){
   }
 }
 
+//bool clear_to_fit(int width, int height, int
+
 bool read_size(std::ifstream &file, card &present_card){
   if(!file.eof()){
     std::string text;
@@ -49,6 +51,11 @@ bool read_size(std::ifstream &file, card &present_card){
           }
         }
       }
+      std::string temporary;
+      temporary = text.substr(0, text.find(" "));
+      present_card.height = stoi(temporary);
+      temporary = text.substr(text.find(" "));
+      present_card.width = stoi(temporary);
       return true;
     }
     else{
@@ -103,10 +110,29 @@ bool read_ships_quantity(std::ifstream &file, std::vector<ship*> &ships){
   else return false;
 }
 
-void fill_up_the_map(const card& present_card, int** map, const std::vector<ship*> &ships){
-  
+bool fill_up_the_map(const card& present_card, int **map, const std::vector<ship*> &ships){
+  int x = 0, y = 0;
+  bool correct = true;
+  //ship * iterator = ships[0];
+  for(ship * iterator : ships){
+    correct = iterator->set_on_map(x, y, present_card, map, ships);
+    // if(correct){
+    //   std::cout << "w pętli!" << std::endl;
+    //   std::cout << x << "   " << y << std::endl;
+    // }
+    // else return false;
+    if(y == present_card.height) return false;
+  }
+  return correct;
 }
 
-void show_map(const card& present_card, int** map, const std::vector<ship*> &ships){
-
+void show_map(const card& present_card, int **map, const std::vector<ship*> &ships){
+  std::cout << "   ";
+  for(int j = 0; j < present_card.width; j++) std::cout << j << ". ";
+  for(int i = 0; i < present_card.height; i++){
+    std::cout << "\n";
+    std::cout << i << ". ";
+    for(int j = 0; j < present_card.width; j++) std::cout << map[i][j] << "  ";
+  }
+  std::cout << std::endl;
 }
