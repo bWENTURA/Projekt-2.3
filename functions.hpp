@@ -7,8 +7,8 @@ bool read_size(std::ifstream& file, card& present_card);
 
 bool read_ships_quantity(std::ifstream& file, std::vector<ship*> &ships);
 
-void fill_up_the_map(const card& present_card, const std::vector<ship*> &ships);
+void fill_up_the_map(const card& present_card, int** map, const std::vector<ship*> &ships);
 
-void show_map(const std::vector<ship*> &ships);
+void show_map(const card& present_card, int** map, const std::vector<ship*> &ships);
 
 #endif

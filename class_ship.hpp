@@ -4,10 +4,12 @@
 class ship{
   protected:
   int size;
+  bool status;
   public:
-  ship(int new_size = 0);
+  ship(int new_size = 0, bool status = false);
   virtual ~ship();
   virtual int get_size() = 0;
+  virtual bool get_status() = 0;
   //virtual void struck() = 0;
 };
 
@@ -17,6 +19,7 @@ class one_mast: public ship{
   one_mast();
   ~one_mast();
   int get_size();
+  bool get_status();
   //void struck(int width, int height);
 };
 

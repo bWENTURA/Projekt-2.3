@@ -69,7 +69,7 @@ bool read_ships_quantity(std::ifstream &file, std::vector<ship*> &ships){
   bool correct;
   while(!file.eof() && types != 4){
     correct = integer_input(file, number_of_type);
-    std::cout << number_of_type << std::endl;
+    //std::cout << number_of_type << std::endl;
     if(correct){
       types++;
       for(int i = 0; i < number_of_type; i++){
@@ -103,11 +103,10 @@ bool read_ships_quantity(std::ifstream &file, std::vector<ship*> &ships){
   else return false;
 }
 
-void fill_up_the_map(const card& present_card, const std::vector<ship*> &ships){
-
+void fill_up_the_map(const card& present_card, int** map, const std::vector<ship*> &ships){
+  
 }
 
-
-void show_map(const std::vector<ship*> &ships){
+void show_map(const card& present_card, int** map, const std::vector<ship*> &ships){
 
 }
