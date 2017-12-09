@@ -48,28 +48,20 @@ bool ship::can_fit_in_width(int width, int height, const card& present_card, int
     if(!can){
       if(check_for_smaller){
         std::cout << "Check for smaller." << std::endl;
+        return true;
       }
       else return false;
     }
     else{
-      if(height != 0){
-          if(width != 0){
-            if(map[height-1][width] != 0 || map[height][width]) return false;
-            if(height + 1 != present_card.height()){
-              if(map[height + 1][width] != 0) return false;
-            }
-          }
-          for(int j = width; j < width + this->get_size(); j++){
-            if(map[height-1][j] != 0) return false;
-          }
-          if(j != present_card.width()){
-            if(map[height-1][j] != 0 || map[height][j]) return false;
-            if(height + 1 != present_card.height()){
-              if(map[height + 1][j] != 0) return false;
-            }
-          }
+      if(height !=0 ){
+        for(int j = width; j < width + this->get_size(); j++){
+          if(map[height-1][j] != 0) return false;
         }
+        if((width != 0 && map[height-1][width-1]) || (width + this->get_size() != present_card.width && map[height-1][width + this->get_size()])) return false;
       }
+      if((width != 0 && (map[height][width-1])) || (width + this->get_size() != present_card.width && map[height][width + this->get_size()])) return false;
+      if(height + 1 != present_card.height && ((width != 0 && (map[height + 1][width-1])) || (width + this->get_size() != present_card.width && map[height + 1][width + this->get_size()]))) return false;
+      return true;
     }
   }
   else return false;
