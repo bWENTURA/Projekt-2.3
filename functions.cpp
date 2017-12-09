@@ -86,11 +86,11 @@ bool read_ships_quantity(std::ifstream &file, std::vector<ship*> &ships){
             ships.push_back(next);
             break;
           }
-          // case 2:{
-          //   next = new two_mast;
-          //   ships.push_back(next);
-          //   break;
-          // }
+          case 2:{
+            next = new two_mast;
+            ships.push_back(next);
+            break;
+          }
           // case 3:{
           //   next = new three_mast;
           //   ships.push_back(next);
@@ -113,7 +113,11 @@ bool read_ships_quantity(std::ifstream &file, std::vector<ship*> &ships){
 bool fill_up_the_map(const card& present_card, int **map, const std::vector<ship*> &ships){
   int x = 0, y = 0;
   bool correct = true;
-  //ship * iterator = ships[0];
+  // auto iterator = ships.begin();
+  // while(iterator != ships.end()){
+  //   std::cout << (*iterator)->get_size() << std::endl;
+  //   iterator++;
+  // }
   for(ship * iterator : ships){
     correct = iterator->set_on_map(x, y, present_card, map, ships);
     // if(correct){
