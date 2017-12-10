@@ -1,6 +1,7 @@
 #include "header.hpp"
 #include "card.hpp"
 #include "class_ship.hpp"
+#include "template_classes.hpp"
 #include "functions.hpp"
 
 bool integer_input(std::ifstream &file, int &number){
@@ -91,16 +92,16 @@ bool read_ships_quantity(std::ifstream &file, std::vector<ship*> &ships){
             ships.push_back(next);
             break;
           }
-          // case 3:{
-          //   next = new three_mast;
-          //   ships.push_back(next);
-          //   break;
-          // }
-          // case 4:{
-          //   next = new four_mast;
-          //   ships.push_back(next);
-          //   break;
-          // }
+          case 3:{
+            next = new three_mast;
+            ships.push_back(next);
+            break;
+          }
+          case 4:{
+            next = new four_mast;
+            ships.push_back(next);
+            break;
+          }
         }
       }
     }
@@ -114,28 +115,27 @@ bool fill_up_the_map(const card& present_card, int **map, const std::vector<ship
   int x = 0, y = 0;
   bool correct = true;
   // auto iterator = ships.begin();
-  // while(iterator != ships.end()){
-  //   std::cout << (*iterator)->get_size() << std::endl;
-  //   iterator++;
-  // }
-  for(ship * iterator : ships){
-    correct = iterator->set_on_map(x, y, present_card, map, ships);
+  for(unsigned int i = ships.size() ; i > 0; i--){
+    if(y == present_card.height) return false;
+    if(!ships[i-1]->get_status()) correct = ships[i-1]->set_on_map(x, y, present_card, map, ships);
+  }
+  // for(ship * iterator : ships){
+  //   correct = iterator->set_on_map(x, y, present_card, map, ships);
     // if(correct){
     //   std::cout << "w pętli!" << std::endl;
     //   std::cout << x << "   " << y << std::endl;
     // }
     // else return false;
-    if(y == present_card.height) return false;
-  }
+    //if(y == present_card.height) return false;
+  // }
   return correct;
 }
-
 void show_map(const card& present_card, int **map, const std::vector<ship*> &ships){
   std::cout << "   ";
-  for(int j = 0; j < present_card.width; j++) std::cout << j << ". ";
+  for(int j = 0; j < present_card.width; j++) std::cout << j + 1 << ". ";
   for(int i = 0; i < present_card.height; i++){
     std::cout << "\n";
-    std::cout << i << ". ";
+    std::cout << i + 1 << ". ";
     for(int j = 0; j < present_card.width; j++) std::cout << map[i][j] << "  ";
   }
   std::cout << std::endl;

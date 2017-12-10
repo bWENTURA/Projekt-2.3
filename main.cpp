@@ -1,6 +1,7 @@
 #include "header.hpp"
 #include "card.hpp"
 #include "class_ship.hpp"
+#include "template_classes.hpp"
 #include "functions.hpp"
 
 int main(int argc, char * argv[]){
