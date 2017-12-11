@@ -143,6 +143,7 @@ bool ship::try_to_place(int &width, int &height, const card &present_card, int *
         std::cout << "Everything is ok in width ~~ try to place." << std::endl;
         return true;
       // }
+      
     }
     else{
       if(check_for_smaller && (index + this->get_extant() != ships.size())){
