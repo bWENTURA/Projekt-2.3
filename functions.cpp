@@ -1,7 +1,7 @@
 #include "header.hpp"
 #include "card.hpp"
 #include "class_ship.hpp"
-#include "template_classes.hpp"
+#include "specific_classes.hpp"
 #include "functions.hpp"
 
 bool integer_input(std::ifstream &file, int &number){
@@ -77,27 +77,26 @@ bool read_ships_quantity(std::ifstream &file, std::vector<ship*> &ships){
   bool correct;
   while(!file.eof() && types != 4){
     correct = integer_input(file, number_of_type);
-    //std::cout << number_of_type << std::endl;
     if(correct){
       types++;
       for(int i = 0; i < number_of_type; i++){
         switch(types){
-          case 1:{
+          case 4:{
             next = new one_mast;
             ships.push_back(next);
             break;
           }
-          case 2:{
+          case 3:{
             next = new two_mast;
             ships.push_back(next);
             break;
           }
-          case 3:{
+          case 2:{
             next = new three_mast;
             ships.push_back(next);
             break;
           }
-          case 4:{
+          case 1:{
             next = new four_mast;
             ships.push_back(next);
             break;
@@ -114,20 +113,10 @@ bool read_ships_quantity(std::ifstream &file, std::vector<ship*> &ships){
 bool fill_up_the_map(const card& present_card, int **map, const std::vector<ship*> &ships){
   int x = 0, y = 0;
   bool correct = true;
-  // auto iterator = ships.begin();
-  for(unsigned int i = ships.size() ; i > 0; i--){
+  for(unsigned int i = 0 ; i != ships.size(); i++){
     if(y == present_card.height) return false;
-    if(!ships[i-1]->get_status()) correct = ships[i-1]->set_on_map(x, y, present_card, map, ships);
+    if(!ships[i]->get_status()) correct = ships[i]->set_on_map(x, y, present_card, map, ships, i);
   }
-  // for(ship * iterator : ships){
-  //   correct = iterator->set_on_map(x, y, present_card, map, ships);
-    // if(correct){
-    //   std::cout << "w pętli!" << std::endl;
-    //   std::cout << x << "   " << y << std::endl;
-    // }
-    // else return false;
-    //if(y == present_card.height) return false;
-  // }
   return correct;
 }
 void show_map(const card& present_card, int **map, const std::vector<ship*> &ships){

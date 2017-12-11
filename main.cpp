@@ -1,7 +1,7 @@
 #include "header.hpp"
 #include "card.hpp"
 #include "class_ship.hpp"
-#include "template_classes.hpp"
+#include "specific_classes.hpp"
 #include "functions.hpp"
 
 int main(int argc, char * argv[]){
@@ -11,7 +11,6 @@ int main(int argc, char * argv[]){
     std::ifstream file;
     file.open(argv[1]);
     if(read_size(file, *present_card) && read_ships_quantity(file, ships)){
-      std::cout << "Bangla" << std::endl;
       int ** map = new int*[present_card->height];
       for(int i = 0; i < present_card->height; i++){
         map[i] = new int[present_card->width];
@@ -20,7 +19,6 @@ int main(int argc, char * argv[]){
       if(!fill_up_the_map(*present_card, map, ships)){
         std::cout << LINE << "\nSomething went wrong with setting ships on the map.\n" << LINE << std::endl;
       }
-      std::cout << present_card->width << "    " << present_card->height << std::endl;
       show_map(*present_card, map, ships);
       for(ship * iterator: ships) delete iterator;
       for(int i = 0; i < present_card->height; i++) delete[] map[i];
