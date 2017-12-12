@@ -14,14 +14,6 @@ one_mast::~one_mast(){
   //std::cout << LINE << "\nDestructor of one_mast class.\n" << LINE << std::endl;
 }
 
-int one_mast::get_size(){
-    return size;
-}
-
-bool one_mast::get_status(){
-  return status;
-}
-
 void one_mast::change_extant(){
   number_to_set--;
 }
@@ -39,14 +31,6 @@ two_mast::two_mast(): ship(2) {
 
 two_mast::~two_mast(){
   //std::cout << LINE << "\nDestructor of two_mast class.\n" << LINE << std::endl;
-}
-
-int two_mast::get_size(){
-    return size;
-}
-
-bool two_mast::get_status(){
-  return status;
 }
 
 void two_mast::change_extant(){
@@ -67,14 +51,6 @@ three_mast::~three_mast(){
   //std::cout << LINE << "\nDestructor of three_mast class.\n" << LINE << std::endl;
 }
 
-int three_mast::get_size(){
-    return size;
-}
-
-bool three_mast::get_status(){
-  return status;
-}
-
 void three_mast::change_extant(){
   number_to_set--;
 }
@@ -92,14 +68,6 @@ four_mast::four_mast(): ship(4) {
 
 four_mast::~four_mast(){
   //std::cout << LINE << "\nDestructor of four_mast class.\n" << LINE << std::endl;
-}
-
-int four_mast::get_size(){
-    return size;
-}
-
-bool four_mast::get_status(){
-  return status;
 }
 
 void four_mast::change_extant(){

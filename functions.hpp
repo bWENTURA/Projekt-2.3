@@ -1,9 +1,9 @@
 #ifndef FUNCTIONS_HPP
 #define FUNCTIONS_HPP
 
-bool integer_input(std::ifstream &file, int &number);
+bool unsigned_integer_input_from_file(std::ifstream &file, int &number);
 
-bool read_size(std::ifstream& file, card& present_card);
+bool read_card_size(std::ifstream& file, card& present_card);
 
 bool read_ships_quantity(std::ifstream& file, std::vector<ship*> &ships);
 

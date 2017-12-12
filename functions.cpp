@@ -4,14 +4,14 @@
 #include "specific_classes.hpp"
 #include "functions.hpp"
 
-bool integer_input(std::ifstream &file, int &number){
+bool unsigned_integer_from_file(std::ifstream &file, int &number){
   if(!file.eof()){
     std::string text;
     getline(file, text);
     if(text.size()){
       for(unsigned int i = 0; i != text.size(); i++){
         if(!isdigit(text[i])){
-          std::cout << "Input isn't integer." << std::endl;
+          std::cout << "Input isn't unsigned integer." << std::endl;
           return false;
         }
       }
@@ -29,9 +29,7 @@ bool integer_input(std::ifstream &file, int &number){
   }
 }
 
-//bool clear_to_fit(int width, int height, int
-
-bool read_size(std::ifstream &file, card &present_card){
+bool read_card_size(std::ifstream &file, card &present_card){
   if(!file.eof()){
     std::string text;
     bool whitespace = false;
@@ -76,18 +74,13 @@ bool read_ships_quantity(std::ifstream &file, std::vector<ship*> &ships){
   int types = 0;
   bool correct;
   while(!file.eof() && types != 4){
-    correct = integer_input(file, number_of_type);
+    correct = unsigned_integer_from_file(file, number_of_type);
     if(correct){
       types++;
       for(int i = 0; i < number_of_type; i++){
         switch(types){
-          case 4:{
-            next = new one_mast;
-            ships.push_back(next);
-            break;
-          }
-          case 3:{
-            next = new two_mast;
+          case 1:{
+            next = new four_mast;
             ships.push_back(next);
             break;
           }
@@ -96,8 +89,13 @@ bool read_ships_quantity(std::ifstream &file, std::vector<ship*> &ships){
             ships.push_back(next);
             break;
           }
-          case 1:{
-            next = new four_mast;
+          case 3:{
+            next = new two_mast;
+            ships.push_back(next);
+            break;
+          }
+          case 4:{
+            next = new one_mast;
             ships.push_back(next);
             break;
           }
@@ -115,11 +113,12 @@ bool fill_up_the_map(const card& present_card, int **map, const std::vector<ship
   bool correct = true;
   for(unsigned int i = 0 ; i != ships.size() && correct; i++){
     if(y == present_card.height) return false;
-    if(!ships[i]->get_status()) correct = ships[i]->set_on_map(x, y, present_card, map, ships, i);
     std::cout << "size = " << ships[i]->get_size() << "    extant= " << ships[i]->get_extant() << std::endl;
+    if(!ships[i]->get_status()) correct = ships[i]->set_on_map(x, y, present_card, map, ships, i);
   }
   return correct;
 }
+
 void show_map(const card& present_card, int **map, const std::vector<ship*> &ships){
   std::cout << "   ";
   for(int j = 0; j < present_card.width; j++) std::cout << j + 1 << ". ";
