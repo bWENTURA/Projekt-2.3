@@ -12,18 +12,22 @@ int main(int argc, char * argv[]){
       card * present_card = new card;
       std::vector<ship*> ships;
       if(read_card_size(file, *present_card) && read_ships_quantity(file, ships)){
-        int ** map = new int*[present_card->height];
+        char ** map = new char*[present_card->height];
         for(int i = 0; i < present_card->height; i++){
-          map[i] = new int[present_card->width];
-          for(int j = 0; j < present_card->width; j++) map[i][j] = 0;
+          map[i] = new char[present_card->width];
+          for(int j = 0; j < present_card->width; j++) map[i][j] = '-';
         }
         if(!fill_up_the_map(*present_card, map, ships)){
           std::cout << LINE << "\nSomething went wrong with setting ships on the map.\n" << LINE << std::endl;
         }
-        show_map(*present_card, map, ships);
+        if(present_card->height <= 18 &&  present_card->width <= 27){
+          show_map(*present_card, map, ships);
+        }
+        else std::cout << LINE << "\nMap is too big to show in terminal.\n" << LINE << std::endl;
         for(int i = 0; i < present_card->height; i++) delete[] map[i];
         delete[] map;
       }
+      else std::cout << LINE << "\nSomething went wrong with input.\n" << LINE << std::endl;
       for(ship * iterator: ships) delete iterator;
       delete present_card;
       file.close();

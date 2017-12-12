@@ -108,7 +108,7 @@ bool read_ships_quantity(std::ifstream &file, std::vector<ship*> &ships){
   else return false;
 }
 
-bool fill_up_the_map(const card& present_card, int **map, const std::vector<ship*> &ships){
+bool fill_up_the_map(const card& present_card, char ** map, const std::vector<ship*> &ships){
   int x = 0, y = 0;
   bool correct = true;
   for(unsigned int i = 0 ; i != ships.size() && correct; i++){
@@ -119,13 +119,19 @@ bool fill_up_the_map(const card& present_card, int **map, const std::vector<ship
   return correct;
 }
 
-void show_map(const card& present_card, int **map, const std::vector<ship*> &ships){
-  std::cout << "   ";
-  for(int j = 0; j < present_card.width; j++) std::cout << j + 1 << ". ";
+void show_map(const card& present_card, char ** map, const std::vector<ship*> &ships){
+  std::cout << "       ";
+  for(int j = 0; j < present_card.width; j++){
+    if(j < 9) std::cout << " "<< j + 1 << ".  ";
+    else std::cout << j + 1 << ".  ";
+  }
+  std::cout << std::endl;
   for(int i = 0; i < present_card.height; i++){
     std::cout << "\n";
-    std::cout << i + 1 << ". ";
-    for(int j = 0; j < present_card.width; j++) std::cout << map[i][j] << "  ";
+    if(i < 9) std::cout << i + 1 << ".    ";
+    else std::cout << i + 1 << ".   ";
+    for(int j = 0; j < present_card.width; j++) std::cout << "  "<< map[i][j] << "  ";
+    std::cout << std::endl;
   }
   std::cout << std::endl;
 }
