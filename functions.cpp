@@ -114,7 +114,9 @@ bool fill_up_the_map(const card& present_card, int **map, const std::vector<ship
   int x = 0, y = 0;
   bool correct = true;
   for(unsigned int i = 0 ; i != ships.size() && correct; i++){
+    if(y == present_card.height) return false;
     if(!ships[i]->get_status()) correct = ships[i]->set_on_map(x, y, present_card, map, ships, i);
+    std::cout << "size = " << ships[i]->get_size() << "    extant= " << ships[i]->get_extant() << std::endl;
   }
   return correct;
 }
