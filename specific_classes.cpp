@@ -4,7 +4,7 @@
 #include "specific_classes.hpp"
 
 // Dla każdej klasy znajduje się definicja konstruktora, destruktora, i funkcji operujących na polu statycznym
-
+// A także uustawienie początkowej wartości pola statycznego
 
 int one_mast::number_to_set = 0;
 

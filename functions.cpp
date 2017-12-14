@@ -4,18 +4,28 @@
 #include "specific_classes.hpp"
 #include "functions.hpp"
 
+// Funkcja sprawdzająca czy ze strumienia została poprawnie wczytana liczba całkowita
 bool unsigned_integer_input_from_stream(std::istream &input_stream, int &number){
+  // Sprawdzenie czy, gdy strumieniem jest plik, nie został osiągnięty jego koniec
   if(!input_stream.eof()){
     std::string text;
+    // Wczytanie całej linijki tekstu do zmiennej text
     getline(input_stream, text);
+    // Sprawdzenie czy wczytany ciąg znaków nie jest pusty
     if(text.size()){
+      // Sprawdzenie czy wszystkie znaki w ciągu są liczbami całkowitymi
       for(unsigned int i = 0; i != text.size(); i++){
         if(!isdigit(text[i])){
           std::cout << "Input isn't unsigned integer." << std::endl;
           return false;
         }
       }
+      // W przypadku, gdy wszystkie znaki są liczbami całkowitymi, ciąg znaków jest konwertowany na liczbę całkowitą
       number = std::stoi(text);
+      if(number >= 25){
+        std::cout << "You entered a very big number of ships, this may cause some trobules, please try again." << std::endl;
+        return false;
+      }
       return true;
     }
     else{
@@ -29,13 +39,18 @@ bool unsigned_integer_input_from_stream(std::istream &input_stream, int &number)
   }
 }
 
+// Funkcja wczytująca ze strumienia dwie liczby całkowite oddzielone spacją
+// Liczby te określają wielkość mapy i są zapisywane w strkturze pomocniczej present_card
 bool read_card_size(std::istream &input_stream, card &present_card){
+  // Sprawdzenie analogiczne do funkcji powyżej
   if(!input_stream.eof()){
     std::string text;
     bool whitespace = false;
     getline(input_stream, text);
+    // Sprawdzenie czy ciąg zawiera najmniejszą dozwoloną liczbę znaków
     if(text.size() >= 3){
       for(unsigned int i = 0; i != text.size(); i++){
+        // Sprawdzenie czy wystąpiła spacja i czy spełnia niezbędne warunku
         if(text[i] == ' '){
           if(i == 0 || whitespace == true || i == text.size() - 1){
             std::cout << "The coordinates are incorrect." << std::endl;
@@ -44,17 +59,25 @@ bool read_card_size(std::istream &input_stream, card &present_card){
           whitespace = true;
         }
         else{
+          // Sprawdzenie czy znak będący czymś innym niż spacją nie jest liczbą
           if(!isdigit(text[i])){
             std::cout << "There's incorrect character in the line." << std::endl;
             return false;
           }
         }
       }
+      // Stworzenie pomocniczej zmiennej typu string,
+      // w której zapisujemy po kolei obydwa ciągi znaków reprezentujących liczby
+      // i z której konwertujemy je na potrzebne nam dane
       std::string temporary;
       temporary = text.substr(0, text.find(" "));
       present_card.height = stoi(temporary);
       temporary = text.substr(text.find(" "));
       present_card.width = stoi(temporary);
+      if(present_card.height >= 19 || present_card.width >= 28){
+        std::cout << "You entered so big map max coordinates, that this may cause some troubles, please try again." << std::endl;
+        return false;
+      }
       return true;
     }
     else{
@@ -68,6 +91,8 @@ bool read_card_size(std::istream &input_stream, card &present_card){
   }
 }
 
+// Funkcja wczytująca ze strumienia kolejne liczby reprezentujące ilość poszczególnych statków,
+// tworząca odpowiednie obiekty i dodająca je do kontenera ships
 bool read_ships_quantity(std::istream &input_stream, card& present_card, std::vector<ship*> &ships){
   ship * next;
   int number_of_type = 0;
@@ -112,41 +137,45 @@ bool read_ships_quantity(std::istream &input_stream, card& present_card, std::ve
   else return false;
 }
 
+// Funkcja wypełniająca mapę map statkami z kontenera ships
 bool fill_up_the_map(const card& present_card, char ** map, const std::vector<ship*> &ships){
   int x = 0, y = 0;
   bool correct = true;
   for(unsigned int i = 0 ; i != ships.size() && correct; i++){
     if(y == present_card.height) return false;
-    //std::cout << "size = " << ships[i]->get_size() << "    extant= " << ships[i]->get_extant() << std::endl;
-    if(!ships[i]->get_status()) correct = ships[i]->set_on_map(x, y, present_card, map, ships, i);
+    correct = ships[i]->set_on_map(x, y, present_card, map, ships, i);
   }
   return correct;
 }
 
+// Funkcja testująca dane z pliku
 void file_test(std::ifstream &file){
   card * present_card = new card;
   std::vector<ship*> ships;
   char ** map = NULL;
+  // Warunek poprawności danych do dalszych działań
   if(read_card_size(file, *present_card) && read_ships_quantity(file, *present_card, ships)){
+    // Funkcja template tworząca matrix danego typu o danych rozmiarach i wypełniająca go danym znakiem danego typu
     map = create_map(map, present_card->height, present_card->width, '-');
+    // Funkcja zwracająca status poprawności wypełniania mapy
     if(!fill_up_the_map(*present_card, map, ships)){
-      std::cout << LINE << "\nSomething went wrong with setting ships on the map.\n" << LINE << std::endl;
+      show_map(*present_card, map, ships);
+      std::cout << LINE << "\nSomething went wrong so this is only the vision of the map,\nwith probably the best setting for the ships that can fit." << std::endl;
     }
-    else{
-      if(present_card->height <= 18 &&  present_card->width <= 27){
-        show_map(*present_card, map, ships);
-      }
-      else std::cout << LINE << "\nMap is too big to show in terminal.\n" << LINE << std::endl;
-    }
+    else show_map(*present_card, map, ships);
+    // Usuwanie mapy
     for(int i = 0; i < present_card->height; i++) delete[] map[i];
     delete[] map;
-    for(ship * iterator: ships) delete iterator;
   }
   else std::cout << LINE << "\nSomething went wrong with input.\n" << LINE << std::endl;
+  // Usuwanie danych z kontenera i pomocniczej present_card
+  for(ship * iterator: ships) delete iterator;
   delete present_card;
+  // Zamknięcie pliku
   file.close();
 }
 
+// Test manualny działa analogicznie do testu z pliku
 void manual_test(){
   card * present_card = new card;
   std::vector<ship*> ships;
@@ -158,34 +187,32 @@ void manual_test(){
   if(read_card_size(std::cin, *present_card) && read_ships_quantity(std::cin, *present_card, ships)){
     map = create_map(map, present_card->height, present_card->width, '-');
     if(!fill_up_the_map(*present_card, map, ships)){
-      std::cout << LINE << "\nSomething went wrong with setting ships on the map.\n" << LINE << std::endl;
+      show_map(*present_card, map, ships);
+      std::cout << LINE << "\nSomething went wrong so this is only the vision of the map,\nwith probably the best setting for the ships that can fit." << std::endl;
     }
-    else{
-      if(present_card->height <= 18 &&  present_card->width <= 27){
-        show_map(*present_card, map, ships);
-      }
-      else std::cout << LINE << "\nMap is too big to show in terminal.\n" << LINE << std::endl;
-    }
+    else show_map(*present_card, map, ships);
     for(int i = 0; i < present_card->height; i++) delete[] map[i];
     delete[] map;
-    for(ship * iterator: ships) delete iterator;
   }
   else std::cout << LINE << "\nYou entered the wrong input.\n" << LINE << std::endl;
+  for(ship * iterator: ships) delete iterator;
   delete present_card;
 }
 
+// Test automatyczny opiera się na losowaniu wysokości mapy z zakresu 18 i szerokości z zakresu 27
+// Następnie w parciu o te dane losuje resztę danych, czyli ilość poszczególnych statków
 void random_test(){
   card * present_card = new card;
   srand(time(NULL));
   int number_of_tests = rand() % 10;
-  std::cout << LINE << "\nStarting " << number_of_tests << " random tests.\n" << LINE << std::endl;
+  std::cout << LINE << "\nStarting " << number_of_tests << " random tests." << std::endl;
   for(int i = 0; i < number_of_tests; i++){
     std::vector<ship*> ships;
     char ** map = NULL;
     ship * next = NULL;
-    present_card->height = 1 + rand() % 17;
-    present_card->width = 1 + rand() % 26;
-    present_card->number_of_four_mast = rand() % present_card->height;
+    present_card->height = 1 + (present_card->height + rand()) % 17;
+    present_card->width = 1 + (present_card->width + rand()) % 26;
+    present_card->number_of_four_mast =  rand() % present_card->height;
     present_card->number_of_three_mast = rand() % present_card->height;
     present_card->number_of_two_mast = rand() % present_card->width;
     present_card->number_of_one_mast = rand() % present_card->width;
@@ -213,23 +240,17 @@ void random_test(){
     std::cout << "\nFour-masted = " << present_card->number_of_four_mast << "\n" << LINE << std::endl;
     map = create_map(map, present_card->height, present_card->width, '-');
     if(!fill_up_the_map(*present_card, map, ships)){
-      std::cout << LINE << "\nSomething went wrong with setting ships on the map.\n" << LINE << std::endl;
+      std::cout << LINE << "\nSomething went wrong with setting ships on the map."<< std::endl;
     }
-    else{
-      if(present_card->height <= 18 &&  present_card->width <= 27){
-        show_map(*present_card, map, ships);
-      }
-      else std::cout << LINE << "\nMap is too big to show in terminal.\n" << LINE << std::endl;
-    }
+    else show_map(*present_card, map, ships);
     for(int i = 0; i < present_card->height; i++) delete[] map[i];
     delete[] map;
     for(ship * iterator: ships) delete iterator;
-    present_card->clear_card();
   }
   delete present_card;
 }
 
-
+// Funkcja wyświetlająca dane i mapę
 void show_map(const card& present_card, char ** map, const std::vector<ship*> &ships){
   int number_of = 1;
   std::cout << LINE << "\nThere's is " << present_card.number_of_one_mast << " ships of size = " << number_of++ << ".";

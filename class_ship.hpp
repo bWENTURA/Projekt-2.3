@@ -1,11 +1,17 @@
 #ifndef CLASS_SHIP_HPP
 #define CLASS_SHIP_HPP
 
+// Klasa bazowa reprezentująca statek. Posiada jedną publiczną metodę, reszta jest typu protected,
+// aby uniemożliwić dostęp, ale umożliwić dziedziczenie
+
 class ship{
   protected:
   int size;
   bool status;
+  int get_size();
+  bool get_status();
   void change_status_positive();
+  virtual int get_extant() = 0;
   virtual void change_extant() = 0;
   bool can_fit_in_width(int width, int height, const card &present_card, char **map);
   bool can_fit_in_height(int width, int height, const card &present_card, char **map);
@@ -17,9 +23,6 @@ class ship{
   public:
   ship(int new_size = 0, bool status = false);
   virtual ~ship();
-  int get_size();
-  bool get_status();
-  virtual int get_extant() = 0;
   bool set_on_map(int &width, int &height, const card& present_card, char ** map, std::vector<ship*> ships, unsigned int index);
 };
 

@@ -303,6 +303,7 @@ bool ship::try_to_place_horizontal(int &width, int &height, const card &present_
     // Zmiana danych statku
     this->change_status_positive();
     this->change_extant();
+    std::cout << "Placed ship of size = " << this->get_size() << " horizontal, with start in coordinates: width = " << width + 1 << " x height = " << height + 1 << "." << std::endl;
     // Uaktualnienie współrzędnych
     if(width + this->get_size() + 1 >= present_card.width){
       if(!(height + 1 == present_card.height)){
@@ -311,7 +312,6 @@ bool ship::try_to_place_horizontal(int &width, int &height, const card &present_
       }
     }
     else width = width + this->get_size() + 1;
-    std::cout << "Everything is ok in width ~~ try to place." << std::endl;
     return true;
   }
   else return false;
@@ -334,12 +334,12 @@ bool ship::try_to_place_vertical(int &width, int &height, const card &present_ca
     for(int i = height; i < height + this->get_size(); i++) map[i][width] = char(this->get_size() + 48);
     this->change_status_positive();
     this->change_extant();
+    std::cout << "Placed ship of size = " << this->get_size() << " vertical, with start in coordinates: width = " << width + 1 << " x height = " << height + 1 << "." << std::endl;
     // Uaktualnienie współrzędnych
     if(!(height + 1 == present_card.height)){
       height++;
     }
     width = 0;
-    std::cout << "Everything is ok in height." << std::endl;
     return true;
   }
   else return false;

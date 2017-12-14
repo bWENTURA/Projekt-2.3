@@ -4,8 +4,10 @@
 #include "specific_classes.hpp"
 #include "functions.hpp"
 
+// Main uruchamiany z parametrami argc i argv[], tak aby można było pobrać nazwę pliku.
 int main(int argc, char * argv[]){
   bool exit = false;
+  // Pęta menu
   while(!exit){
     int input;
     bool correct = false;
@@ -20,6 +22,7 @@ int main(int argc, char * argv[]){
     }
     switch(input){
       case 1:{
+        // Sprawdzenie warunków niezbędnych do uruchomienia testowania danych z pliku
         if(argc == 2){
           std::ifstream file;
           file.open(argv[1]);
@@ -34,14 +37,17 @@ int main(int argc, char * argv[]){
         break;
       }
       case 2:{
+        // Uruchomienie testu manualnego
         manual_test();
         break;
       }
       case 3:{
+        // Uruchomienie testu automatycznego
         random_test();
         break;
       }
       case 0:{
+        // Wyjście z pętli i programu
         std::cout << "Exit!" << std::endl;
         exit = true;
       }
