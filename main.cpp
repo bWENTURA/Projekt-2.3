@@ -7,6 +7,10 @@
 // Main uruchamiany z parametrami argc i argv[], tak aby można było pobrać nazwę pliku.
 int main(int argc, char * argv[]){
   bool exit = false;
+  std::cout << LINE << "\nRemember that file should contains only five lines of data.\n";
+  std::cout << "In the first line there should only be two integers separated by whitespace character.\n";
+  std::cout << "In each next line, there should be only one integer, refering to the number of the ships of the specific size.\n";
+  std::cout << "In first line there should be the number of the four-masted ships, in second there should be the number of the three-masted ships and so on.\n" << std::endl;
   // Pęta menu
   while(!exit){
     int input;

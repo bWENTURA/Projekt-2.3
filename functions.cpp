@@ -188,7 +188,7 @@ void manual_test(){
     map = create_map(map, present_card->height, present_card->width, '-');
     if(!fill_up_the_map(*present_card, map, ships)){
       show_map(*present_card, map, ships);
-      std::cout << LINE << "\nSomething went wrong so this is only the vision of the map,\nwith probably the best setting for the ships that can fit." << std::endl;
+      std::cout << LINE << "\nSomething went wrong, so this is only the vision of the map,\nwith probably the best setting for the ships that can fit." << std::endl;
     }
     else show_map(*present_card, map, ships);
     for(int i = 0; i < present_card->height; i++) delete[] map[i];
@@ -202,6 +202,8 @@ void manual_test(){
 // Test automatyczny opiera się na losowaniu wysokości mapy z zakresu 18 i szerokości z zakresu 27
 // Następnie w parciu o te dane losuje resztę danych, czyli ilość poszczególnych statków
 void random_test(){
+  std::string enter;
+  int max;
   card * present_card = new card;
   srand(time(NULL));
   int number_of_tests = rand() % 10;
@@ -212,10 +214,12 @@ void random_test(){
     ship * next = NULL;
     present_card->height = 1 + (present_card->height + rand()) % 17;
     present_card->width = 1 + (present_card->width + rand()) % 26;
-    present_card->number_of_four_mast =  rand() % present_card->height;
-    present_card->number_of_three_mast = rand() % present_card->height;
-    present_card->number_of_two_mast = rand() % present_card->width;
-    present_card->number_of_one_mast = rand() % present_card->width;
+    if(present_card->width > present_card->height) max = present_card->width;
+    else max = present_card->height;
+    present_card->number_of_four_mast =  rand() % max;
+    present_card->number_of_three_mast = rand() % max;
+    present_card->number_of_two_mast = rand() % max;
+    present_card->number_of_one_mast = rand() % max;
     for(int j = 0; j < present_card->number_of_four_mast; j++){
       next = new four_mast;
       ships.push_back(next);
@@ -232,7 +236,8 @@ void random_test(){
       next = new one_mast;
       ships.push_back(next);
     }
-    std::cout << LINE << "\nSize of map: " << present_card->height << " x " << present_card->width << std::endl;
+    std::cout << LINE << "\nThis is test number: " << i + 1 << ".";
+    std::cout << "\nSize of map: " << present_card->width << " x " << present_card->height << ".\n";
     std::cout << LINE << "\nShips:";
     std::cout << "\nOne-masted = " << present_card->number_of_one_mast << ".";
     std::cout << "\nTwo-masted = " << present_card->number_of_two_mast << ".";
@@ -240,12 +245,14 @@ void random_test(){
     std::cout << "\nFour-masted = " << present_card->number_of_four_mast << "\n" << LINE << std::endl;
     map = create_map(map, present_card->height, present_card->width, '-');
     if(!fill_up_the_map(*present_card, map, ships)){
-      std::cout << LINE << "\nSomething went wrong with setting ships on the map."<< std::endl;
+      std::cout << LINE << "\nI can't put these ships on the map of this size..\n"<< LINE << std::endl;
     }
     else show_map(*present_card, map, ships);
     for(int i = 0; i < present_card->height; i++) delete[] map[i];
     delete[] map;
     for(ship * iterator: ships) delete iterator;
+    std::cout << "Enter something to go to the new test." << std::endl;
+    getline(std::cin, enter);
   }
   delete present_card;
 }
@@ -253,7 +260,8 @@ void random_test(){
 // Funkcja wyświetlająca dane i mapę
 void show_map(const card& present_card, char ** map, const std::vector<ship*> &ships){
   int number_of = 1;
-  std::cout << LINE << "\nThere's is " << present_card.number_of_one_mast << " ships of size = " << number_of++ << ".";
+  std::cout << LINE << "\nMap is the size of " << present_card.width << " x " << present_card.height << ".\n" << LINE; 
+  std::cout << "\nThere's is " << present_card.number_of_one_mast << " ships of size = " << number_of++ << ".";
   std::cout << "\nThere's is " << present_card.number_of_two_mast << " ships of size = " << number_of++ << ".";
   std::cout << "\nThere's is " << present_card.number_of_three_mast << " ships of size = " << number_of++ << ".";
   std::cout << "\nThere's is " << present_card.number_of_four_mast << " ships of size = " << number_of++ << ".\n" << LINE << std::endl;
