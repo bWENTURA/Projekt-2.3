@@ -251,8 +251,10 @@ void random_test(){
     for(int i = 0; i < present_card->height; i++) delete[] map[i];
     delete[] map;
     for(ship * iterator: ships) delete iterator;
-    std::cout << "Enter something to go to the new test." << std::endl;
-    getline(std::cin, enter);
+    if(i != number_of_tests - 1){
+      std::cout << "Enter something to go to the new test." << std::endl;
+      getline(std::cin, enter);
+    }
   }
   delete present_card;
 }
@@ -260,7 +262,7 @@ void random_test(){
 // Funkcja wyświetlająca dane i mapę
 void show_map(const card& present_card, char ** map, const std::vector<ship*> &ships){
   int number_of = 1;
-  std::cout << LINE << "\nMap is the size of " << present_card.width << " x " << present_card.height << ".\n" << LINE; 
+  std::cout << LINE << "\nMap is the size of " << present_card.width << " x " << present_card.height << ".\n" << LINE;
   std::cout << "\nThere's is " << present_card.number_of_one_mast << " ships of size = " << number_of++ << ".";
   std::cout << "\nThere's is " << present_card.number_of_two_mast << " ships of size = " << number_of++ << ".";
   std::cout << "\nThere's is " << present_card.number_of_three_mast << " ships of size = " << number_of++ << ".";
