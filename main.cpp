@@ -5,37 +5,47 @@
 #include "functions.hpp"
 
 int main(int argc, char * argv[]){
-  if(argc == 2){
-    std::ifstream file;
-    file.open(argv[1]);
-    if(file){
-      card * present_card = new card;
-      std::vector<ship*> ships;
-      if(read_card_size(file, *present_card) && read_ships_quantity(file, ships)){
-        char ** map = new char*[present_card->height];
-        for(int i = 0; i < present_card->height; i++){
-          map[i] = new char[present_card->width];
-          for(int j = 0; j < present_card->width; j++) map[i][j] = '-';
-        }
-        if(!fill_up_the_map(*present_card, map, ships)){
-          std::cout << LINE << "\nSomething went wrong with setting ships on the map.\n" << LINE << std::endl;
-        }
-        if(present_card->height <= 18 &&  present_card->width <= 27){
-          show_map(*present_card, map, ships);
-        }
-        else std::cout << LINE << "\nMap is too big to show in terminal.\n" << LINE << std::endl;
-        for(int i = 0; i < present_card->height; i++) delete[] map[i];
-        delete[] map;
-      }
-      else std::cout << LINE << "\nSomething went wrong with input.\n" << LINE << std::endl;
-      for(ship * iterator: ships) delete iterator;
-      delete present_card;
-      file.close();
+  bool exit = false;
+  while(!exit){
+    int input;
+    bool correct = false;
+    std::cout << LINE <<  "\n1. Load input from file, which name you putted as a parametr.\n";
+    std::cout << "2. Run manual test.\n";
+    std::cout << "3. Run auto test.\n";
+    std::cout << "0. Exit.\n" << LINE << std::endl;
+    correct = unsigned_integer_input_from_stream(std::cin, input);
+    while(!correct || (input != 1 && input != 2 && input != 3 && input != 0)){
+      std::cout << "You did something wrong, try again." << std::endl;
+      correct = unsigned_integer_input_from_stream(std::cin, input);
     }
-    else{
-      std::cout << "Program have not opened file correctly." << std::endl;
+    switch(input){
+      case 1:{
+        if(argc == 2){
+          std::ifstream file;
+          file.open(argv[1]);
+          if(file){
+            file_test(file);
+          }
+          else{
+            std::cout << "Program have not opened file correctly." << std::endl;
+          }
+        }
+        else std::cout << "Number of parameters for program is wrong." << std::endl;
+        break;
+      }
+      case 2:{
+        manual_test();
+        break;
+      }
+      case 3:{
+        random_test();
+        break;
+      }
+      case 0:{
+        std::cout << "Exit!" << std::endl;
+        exit = true;
+      }
     }
   }
-  else std::cout << "Number of parameters is wrong." << std::endl;
   return 0;
 }

@@ -14,3 +14,12 @@ card::card(){
 card::~card(){
   //std::cout << LINE << "\nCard object deleted.\n" << LINE << std::endl;
 }
+
+void card::clear_card(){
+  width = 0;
+  height = 0;
+  number_of_one_mast = 0;
+  number_of_two_mast = 0;
+  number_of_three_mast = 0;
+  number_of_four_mast = 0;
+}

@@ -1,6 +1,9 @@
 #ifndef SPECIFIC_CLASSES_HPP
 #define SPECIFIC_CLASSES_HPP
 
+// Pole statyczne number_to_set, okresla ile jeszcze statków danego typu trzeba ustawić
+// Jest ono pomocne przy wyszukiwaniu mniejszych statków np. w funkcji ship::place_between
+
 class one_mast: public ship{
   static int number_to_set;
   public:

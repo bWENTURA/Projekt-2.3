@@ -113,39 +113,15 @@ bool ship::find_smaller(std::vector<ship*> ships, unsigned int &index, int size)
 
 // Funkcja sprawdzająca czy w obszarze za małym dla statku wywołującego może zmieścić się mniejszy. W razie możliwości wstawia mniejsze statki
 bool ship::place_between(int &width, int &height, int space_between, const card &present_card, char **map, std::vector<ship*> ships, unsigned int index){
-  std::cout << height << "   " << width << std::endl;
   unsigned int next_index = index;
   switch(space_between){
     case 1:{
-      // Próba znalezienia statku o wielkości 1 i umieszczenia go na mapie
-      if(find_smaller(ships, next_index, 1)){
-        if(ships[next_index]->try_to_place_horizontal(width, height, present_card, map)){
-          return true;
-        }
-      }
-      else{
-        // Próba wpasowania obiektu wywołującego pionowo
-        if(this->try_to_place_vertical(width, height, present_card, map)){
-          return true;
-        }
-        else{
-          next_index = index;
-          // Próba wpasowania statku o rozmiarze 3 pionowo
-          if(this->get_size() != 3){
-            if(find_smaller(ships, next_index, 3)){
-              if(ships[next_index]->try_to_place_vertical(width, height, present_card, map)){
-                return true;
-              }
-            }
-          }
-          // Próba wpasowania statku o rozmiarze 2 pionowo
-          if(height + 2 == present_card.height){
-            next_index = index;
-            if(find_smaller(ships, next_index, 2)){
-              if(ships[next_index]->try_to_place_vertical(width, height, present_card, map)){
-                return true;
-              }
-            }
+      // Próba wstawienia elementu dowolnej wielkości pionowo
+      for(int i = this->get_size(); i >= 1; i--){
+        next_index = index;
+        if(find_smaller(ships, next_index, i)){
+          if(ships[next_index]->try_to_place_vertical(width, height, present_card, map)){
+            return true;
           }
         }
       }
@@ -159,9 +135,14 @@ bool ship::place_between(int &width, int &height, int space_between, const card 
         }
       }
       else{
-        // Próba wpasowania statku wywołującego pionowo
-        if(this->try_to_place_vertical(width, height, present_card, map)){
-          return true;
+        // Próba wpasowania, któregoś z większych statków pionowo
+        for(int i = this->get_size(); i >= 3; i--){
+          next_index = index;
+          if(find_smaller(ships, next_index, i)){
+            if(ships[next_index]->try_to_place_vertical(width, height, present_card, map)){
+              return true;
+            }
+          }
         }
       }
       break;
@@ -177,41 +158,21 @@ bool ship::place_between(int &width, int &height, int space_between, const card 
         // Próba wpasowania statku o rozmiarze 1
         if(find_smaller(ships, next_index, 1)){
           if(ships[next_index]->try_to_place_horizontal(width, height, present_card, map)){
+            // Następnie próba wpasowania za jedynką wywoływanego statku pionowo
             if(!this->try_to_place_vertical(width, height, present_card, map)){
-              if(find_smaller(ships, next_index, 1)){
-                ships[next_index]->try_to_place_horizontal(width, height, present_card, map);
-              }
-              else{
-                // Próba wpasowania statku o rozmiarze 2
-                next_index = index;
-                if(find_smaller(ships, next_index, 2)){
-                  ships[next_index]->try_to_place_vertical(width, height, present_card, map);
+              // W razie niepowodzenia proba znalezienia statku o rozmiarze 1 lub 2 do wstawienia pionowego
+              for(int i = 1; i <= 2; i++){
+                if(find_smaller(ships, next_index, i)){
+                  if(ships[next_index]->try_to_place_horizontal(width, height, present_card, map)){
+                    return true;
+                  }
                 }
+                next_index = index;
               }
             }
             return true;
           }
         }
-        // Próba wpasowania statku wywołującego pionowo
-        // if(this->try_to_place_vertical(width, height, present_card, map)){
-        //   return true;
-        // }
-        // else{
-        //   // Próba wpasowania statku o rozmiarze 1
-        //   if(find_smaller(ships, next_index, 1)){
-        //     if(ships[next_index]->try_to_place_horizontal(width, height, present_card, map)){
-        //       return true;
-        //     }
-        //   }
-        //   else{
-        //     // Próba wpasowania statku o rozmiarze 2
-        //     if(find_smaller(ships, next_index, 2)){
-        //       if(ships[next_index]->try_to_place_vertical(width, height, present_card, map)){
-        //         return true;
-        //       }
-        //     }
-        //   }
-        // }
       }
       break;
     }
@@ -224,9 +185,9 @@ bool ship::try_another_option(int &width, int &height, const card &present_card,
   unsigned next_index_1 = index, next_index_2 = index, next_index_3;
   switch(this->get_size()){
     case 4:{
-      std::cout << "In case 4" << std::endl;
+      // W przypadku gdy można zmieścić statek wielkości 4 i jest za nim jedno wolne miejsce
+      // próbuję znaleźć statki o wielkościach 3 + 1, lub 2 + 2, lub 1 + 1 + 1, aby optymalniej wykorzystać miejsce
       if(find_smaller(ships, next_index_1, 3) && find_smaller(ships, next_index_2, 1)){
-        std::cout << "In case 41" << std::endl;
         if(ships[next_index_1]->try_to_place_horizontal(width, height, present_card, map) && ships[next_index_2]->try_to_place_horizontal(width, height, present_card, map)){
           return true;
         }
@@ -255,6 +216,8 @@ bool ship::try_another_option(int &width, int &height, const card &present_card,
       break;
     }
     case 3:{
+      // W przypadku, gdy statek o rozmiarze 3 ma za sobą wolne miejsce
+      // szukam statków o rozmiarach 2 + 1
       if(find_smaller(ships, next_index_1, 2) && find_smaller(ships, next_index_2, 1)){
         if(ships[next_index_1]->try_to_place_horizontal(width, height, present_card, map) && ships[next_index_2]->try_to_place_horizontal(width, height, present_card, map)){
           return true;
@@ -263,12 +226,18 @@ bool ship::try_another_option(int &width, int &height, const card &present_card,
       break;
     }
     case 2:{
+      // W przypadku gdy statek o rozmiarze 2 ma a sobą wolne miejsce
+      // szukam statków o rozmiarach 1 + 1
+      // ewentualnie próbuję ustawić 1 + 2, w przypadku gdy 2 można ustawić pionowo
       if(find_smaller(ships, next_index_1, 1)){
         next_index_2 = next_index_1 + 1;
         if(find_smaller(ships, next_index_2, 1)){
           if(ships[next_index_1]->try_to_place_horizontal(width, height, present_card, map) && ships[next_index_2]->try_to_place_horizontal(width, height, present_card, map)){
             return true;
           }
+        }
+        if(this->can_fit_in_height(width, height, present_card, map) && ships[next_index_1]->try_to_place_horizontal(width, height, present_card, map) && this->try_to_place_vertical(width, height, present_card, map)){
+          return true;
         }
       }
       break;
@@ -284,9 +253,8 @@ bool ship::set_on_map(int &width, int &height, const card &present_card, char **
     bool coordinates_changed = false;
     if(!this->can_fit_in_width(width, height, present_card, map)){
       int space_between = 0;
+      // Pętla licząca ile jest potencjalnego miejsca, zeby ustawić mniejszy statek
       for(int i = width; i < width + this->get_size() + 1 && i != present_card.width; i++){
-        // std::cout << height << "   " << width << std::endl;
-        // std::cout << space_between << "    ble" << std::endl;
         if(map[height][i] == '-'){
           if(height != 0 && map[height - 1][i] != '-'){
             space_between--;
@@ -296,14 +264,15 @@ bool ship::set_on_map(int &width, int &height, const card &present_card, char **
         }
         else{
           space_between--;
-          // std::cout << "tak!" << space_between << std::endl;
           break;
         }
       }
-      std::cout << space_between << std::endl;
+      // Jeżeli jest miejsce na mniejszy statek, to sprawdzamy czy na pewno można go ustawić
+      // W zmniennej coordinates_changed zapisujemy zmianę współrzędnych, po ewentualnym wstawieniu mniejszego statku
       if(space_between > 0 && this->get_size() != space_between){
         coordinates_changed = this->place_between(width, height, space_between, present_card, map, ships, index);
       }
+      // Jeżeli żaden statek nie został wpasowany, współrzędne zostają zmienione, by przeszukiwać dalej mapęw poszukiwaniu miejsca
       if(!coordinates_changed){
         if(width + 1 == present_card.width){
           if(height + 1 == present_card.height) return false;
@@ -314,22 +283,27 @@ bool ship::set_on_map(int &width, int &height, const card &present_card, char **
       }
     }
     else{
+      // Sprawdzenie czy można optymalniej ustawić statki
       bool another_one = false;
       if(width + this->get_size() + 1 == present_card.width){
         another_one = this->try_another_option(width, height, present_card, map, ships, index);
       }
       if(!another_one) return this->try_to_place_horizontal(width, height, present_card, map);
     }
+    // Rekurencyjne przejście do ustawiania w następnych współrzędnych
     return this->set_on_map(width, height, present_card, map, ships, index);
   }
   else return true;
 }
 
+// Funkcja określająca czy udało sie ustawić statek poziomo
 bool ship::try_to_place_horizontal(int &width, int &height, const card &present_card, char **map){
   if(this->can_fit_in_width(width, height, present_card, map)){
     for(int i = width; i < width + this->get_size(); i++) map[height][i] = char(this->get_size() + 48);
+    // Zmiana danych statku
     this->change_status_positive();
     this->change_extant();
+    // Uaktualnienie współrzędnych
     if(width + this->get_size() + 1 >= present_card.width){
       if(!(height + 1 == present_card.height)){
         height++;
@@ -343,8 +317,10 @@ bool ship::try_to_place_horizontal(int &width, int &height, const card &present_
   else return false;
 }
 
+// Funkcja określająca czy udało się ustawić statek pionowo
 bool ship::try_to_place_vertical(int &width, int &height, const card &present_card, char **map){
   bool can_fit = false;
+  // Przejście do najmożlmocniej wysuniętego na prawo miejsca, gdzie można ustawić statek pionowo
   for(int i = width; i < present_card.width; i++){
     if(map[height][i] == '-'){
       if(can_fit_in_height(i, height, present_card, map)){
@@ -354,10 +330,14 @@ bool ship::try_to_place_vertical(int &width, int &height, const card &present_ca
     }
   }
   if(can_fit){
+    // Zmiana danych na mapie i danych statku o ile można go ustawić
     for(int i = height; i < height + this->get_size(); i++) map[i][width] = char(this->get_size() + 48);
     this->change_status_positive();
     this->change_extant();
-    height++;
+    // Uaktualnienie współrzędnych
+    if(!(height + 1 == present_card.height)){
+      height++;
+    }
     width = 0;
     std::cout << "Everything is ok in height." << std::endl;
     return true;

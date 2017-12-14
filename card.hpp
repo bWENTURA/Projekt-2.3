@@ -10,6 +10,7 @@ struct card{
   int number_of_four_mast;
   card();
   ~card();
+  void clear_card();
 };
 
 #endif
